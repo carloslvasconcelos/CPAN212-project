@@ -1,6 +1,6 @@
-# World Cup Match Explorer
+# WORLD CUP MATCH EXPLORER
 
-## 📌 Project Proposal
+##  Project Proposal
 **Team Members:**  
 Carlos Vasconcelos
 
@@ -10,7 +10,7 @@ Carlos Vasconcelos
 **Brief Overview:**  
 This project will provide a platform where users can search and explore FIFA World Cup matches. Users will be able to filter games by year, stage (group, knockout, final), or team, and view match statistics such as goals, scorers, and results. Future versions will include user authentication and the ability to save favorite matches or teams.
 
-## 🚀 Feature List (Planned)
+## Feature List (Planned)
 - View all matches from the dataset
 - Filter by year (e.g., 2014, 2018, 2022)
 - Filter by stage (group, round of 16, quarter, semi, final)
@@ -18,11 +18,11 @@ This project will provide a platform where users can search and explore FIFA Wor
 - Display match details (date, teams, score, goals)
 - **Future:** auth (login/register), favorites, pagination, advanced filtering
 
-## 🎨 Wireframes (Optional)
+## Wireframes (Optional)
 - Matches List Page (search + filters + table)
 - Match Details Page
 
-## 🛠️ Backend Setup (Phase 1)
+## Backend Setup (Phase 1)
 - Node.js + Express
 - Dummy routes:
   - `GET /api/v1/matches`
@@ -32,16 +32,16 @@ This project will provide a platform where users can search and explore FIFA Wor
 
 ### Run locally
 ```bash
-git clone https://github.com/YOUR-USERNAME/world-cup-match-explorer.git
-cd world-cup-match-explorer
+git clone https://github.com/carloslvasconcelos/CPAN212-project
+cd CPAN212-project
 npm install
 npm run dev
 ```
 
 Server: http://localhost:5000
 
-## 📂 GitHub Repository
-https://github.com/YOUR-USERNAME/world-cup-match-explorer
+## GitHub Repository
+https://github.com/carloslvasconcelos/CPAN212-project
 
 ## ✅ Phase 1 Deliverables
 - [x] Proposal + Dataset link
