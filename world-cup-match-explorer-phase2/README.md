@@ -71,3 +71,8 @@ curl -X PUT http://localhost:3001/api/v1/matches/match_1 -H "Content-Type: appli
 }'
 curl -X DELETE http://localhost:3001/api/v1/matches/match_3
 ```
+Project Continuity
+
+This Phase 2 submission continues the development of my Phase 1 project, World Cup Match Explorer — Phase 1
+
+It evolves the initial setup into a modular Express.js architecture with CRUD functionality, validation, and middlewares.
