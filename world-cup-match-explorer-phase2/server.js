@@ -4,6 +4,8 @@ import 'dotenv/config';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import { connectDB } from './src/shared/middlewares/connect-db.js';
+
 import matchesRouter from './src/modules/matches/matches.routes.js';
 import teamsRouter from './src/modules/teams/teams.routes.js';
 import notFound from './src/middlewares/notFound.js';
@@ -13,6 +15,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+connectDB();
 
 // Application-level middlewares
 app.use(cors());

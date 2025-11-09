@@ -1,53 +1,33 @@
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import Match from "./models/match.model.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const dataPath = path.resolve(__dirname, '../../data/matches.json');
+export const getAllMatches = async (filters = {}, options = {}) => {
+  const { year, stage, sort, page = 1, limit = 10 } = options;
 
-async function readAll() {
-  const raw = await fs.readFile(dataPath, 'utf-8');
-  return JSON.parse(raw);
-}
+  const query = {};
+  if (year) query.year = year;
+  if (stage) query.stage = new RegExp(stage, "i");
 
-async function writeAll(list) {
-  await fs.writeFile(dataPath, JSON.stringify(list, null, 2));
-}
+  const skip = (page - 1) * limit;
+  const sortOption = sort ? { [sort]: 1 } : {};
 
-export async function getAllMatches() {
-  return await readAll();
-}
+  return await Match.find(query)
+    .sort(sortOption)
+    .skip(skip)
+    .limit(limit);
+};
 
-export async function getMatchById(id) {
-  const list = await readAll();
-  return list.find(m => m.id === id) || null;
-}
+export const getMatchById = async (id) => {
+  return await Match.findById(id);
+};
 
-export async function addNewMatch(data) {
-  const list = await readAll();
-  const id = data.id || `match_${Date.now()}`;
-  const toSave = { id, ...data };
-  list.push(toSave);
-  await writeAll(list);
-  return toSave;
-}
+export const addMatch = async (data) => {
+  return await Match.create(data);
+};
 
-export async function updateExistingMatch(id, data) {
-  const list = await readAll();
-  const idx = list.findIndex(m => m.id === id);
-  if (idx === -1) return null;
-  const updated = { ...list[idx], ...data, id };
-  list[idx] = updated;
-  await writeAll(list);
-  return updated;
-}
+export const updateMatch = async (id, data) => {
+  return await Match.findByIdAndUpdate(id, data, { new: true });
+};
 
-export async function deleteMatch(id) {
-  const list = await readAll();
-  const idx = list.findIndex(m => m.id === id);
-  if (idx === -1) return false;
-  list.splice(idx, 1);
-  await writeAll(list);
-  return true;
-}
+export const deleteMatch = async (id) => {
+  return await Match.findByIdAndDelete(id);
+};

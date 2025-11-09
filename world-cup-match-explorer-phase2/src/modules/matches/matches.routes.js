@@ -4,8 +4,8 @@ import { matchValidationRules, matchIdParamRule } from './matches.validation.js'
 import {
   getAllMatches,
   getMatchById,
-  addNewMatch,
-  updateExistingMatch,
+  addMatch,
+  updateMatch,
   deleteMatch
 } from './matches.model.js';
 
@@ -14,9 +14,11 @@ const router = Router();
 // GET all
 router.get('/', async (req, res, next) => {
   try {
-    const data = await getAllMatches();
+    const data = await getAllMatches({}, req.query);
     res.json({ success: true, data });
-  } catch (err) { next(err); }
+  } catch (err) { 
+    next(err); 
+  }
 });
 
 // GET by id
@@ -31,7 +33,7 @@ router.get('/:id', validate(matchIdParamRule), async (req, res, next) => {
 // POST create
 router.post('/', validate(matchValidationRules), async (req, res, next) => {
   try {
-    const created = await addNewMatch(req.body);
+    const created = await addMatch(req.body);
     res.status(201).json({ success: true, data: created });
   } catch (err) { next(err); }
 });
@@ -39,7 +41,7 @@ router.post('/', validate(matchValidationRules), async (req, res, next) => {
 // PUT update
 router.put('/:id', validate([...matchIdParamRule, ...matchValidationRules]), async (req, res, next) => {
   try {
-    const updated = await updateExistingMatch(req.params.id, req.body);
+    const updated = await updateMatch(req.params.id, req.body);
     if (!updated) return res.status(404).json({ success: false, error: { message: 'Match not found' } });
     res.json({ success: true, data: updated });
   } catch (err) { next(err); }
