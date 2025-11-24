@@ -12,12 +12,13 @@ function App() {
 
     <nav style={{ padding: "20px" }}>
       <Link to="/" style={{ marginRight: "15px" }}>Matches</Link>
-      <Link to="/matches/create">Add New Match</Link>
+      <Link to="/matches/new">Add New Match</Link>
     </nav>
 
     <Routes>
         <Route path="/" element={<MatchesList />} />
-        <Route path="/matches/create" element={<CreateMatch />} />
+        <Route path="/matches" element={<MatchesList />} />
+        <Route path="/matches/new" element={<CreateMatch />} />
         <Route path="/matches/:id/edit" element={<EditMatch />} />
     </Routes>
 
