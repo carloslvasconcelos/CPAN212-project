@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const STAGES = [
+  "Group Stage",
+  "Round of 16",
+  "Quarter-finals",
+  "Semi-finals",
+  "Final"
+];
+
 export default function CreateMatch() {
   const navigate = useNavigate();
 
@@ -71,15 +79,20 @@ export default function CreateMatch() {
         />
 
         <label>Stage:</label>
-        <input
-          type="text"
+        <select
           name="stage"
           value={form.stage}
           onChange={handleChange}
           required
           style={{ width: "100%", marginBottom: "10px" }}
-        />
+        >
 
+        <option value="">Select a stage</option>
+
+        {STAGES.map(stage => (
+          <option key={stage} value={stage}>{stage}</option>
+        ))}
+      </select>
         <label>Home Team:</label>
         <input
           type="text"
