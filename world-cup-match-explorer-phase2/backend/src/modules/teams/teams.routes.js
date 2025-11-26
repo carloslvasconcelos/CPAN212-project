@@ -13,7 +13,7 @@ const router = Router();
 
 //GET all
 
-router.get('/', async (_req, res, next) => {
+router.get('/', async (req, res, next) => {
   try {
     const data = await getAllTeams({}, req.query);
     res.json({ success: true, data });
