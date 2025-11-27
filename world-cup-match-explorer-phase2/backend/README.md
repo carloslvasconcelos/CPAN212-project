@@ -168,9 +168,108 @@ dotenv
 express-validator
 
 Nodemon
+-------------------------------------------------------------------------------------------
 
-🧾 Summary of Progress
+World Cup Match Explorer — Phase 4 (Frontend Integration with React)
+
+🆕 Added in Phase 4 — Complete React frontend connected to the Express + MongoDB backend.
+
+✅ What’s included in Phase 4
+🖥️ React Frontend Application
+
+A new React application was created inside the /frontend directory using Create React App.
+This frontend provides a full user interface for interacting with the backend API.
+
+✔ Implemented Pages
+
+Matches List Page (READ + DELETE)
+
+Create Match Page (CREATE)
+
+Edit Match Page (UPDATE)
+
+Navigation bar to access all pages
+
+✔ Features Implemented
+
+Fully functional CRUD operations through the UI
+
+React Router for navigation between pages
+
+Forms with client-side validation (required fields)
+
+Success and error messages for all operations
+
+Fetch API used to communicate with the backend
+
+UI automatically updates after create/edit/delete
+
+Loading of match data by ID for editing
+
+Inline styling for simplicity (no external CSS frameworks)
+
+Clean and easy-to-understand component structure
+
+📁 Frontend Project Structure
+frontend/
+ ├─ src/
+ │   ├─ App.js               # Routes + navigation
+ │   ├─ index.js             # React root
+ │   ├─ MatchesList.js       # List + delete matches
+ │   ├─ CreateMatch.js       # Create new match
+ │   └─ EditMatch.js         # Edit existing match
+ ├─ package.json
+ └─ README.md
+
+🔗 Frontend Routes
+Route	Description
+/	List all matches
+/matches	List all matches
+/matches/new	Create new match
+/matches/:id/edit	Edit a match
+🔧 API Integration
+
+All data is fetched directly from the backend API:
+
+http://localhost:3001/api/v1/matches
+
+
+Using the Fetch API:
+
+GET → load matches
+
+POST → create matches
+
+PUT → update matches
+
+DELETE → remove matches
+
+No hardcoded data is used—all data is from MongoDB Atlas.
+
+✔ Validation & Feedback
+
+Client-side validation prevents submitting empty fields
+
+Errors displayed in red
+
+Success messages in green
+
+Confirmation message before deleting
+
+▶️ Running the frontend
+cd frontend
+npm install
+npm start
+
+
+Runs on:
+👉 http://localhost:3000
+
+Ensure backend is running simultaneously.
+
+🧾 Summary of Progress Updated
 Phase	Focus	Key Deliverables
-Phase 1	Project setup	Node + Express skeleton, routes dummy
-Phase 2	Modular architecture	JSON CRUD + validations + middlewares
+Phase 1	Project setup	Node + Express skeleton, dummy routes
+Phase 2	Modular architecture	JSON CRUD + validation + middlewares
 Phase 3	Database integration	MongoDB Atlas + Mongoose CRUD + filtering
+Phase 4	Frontend integration	React UI + CRUD via API + Routing + Validation
