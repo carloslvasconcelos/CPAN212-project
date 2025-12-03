@@ -267,9 +267,185 @@ Runs on:
 
 Ensure backend is running simultaneously.
 
+World Cup Match Explorer — Phase 5 (Authentication, Authorization & Security)
+
+🆕 Added in Phase 5 — Full authentication system with OTP login, JWT tokens, and role-based authorization.
+
+This phase transforms the project into a secure, production-ready API by adding user accounts, protected routes, and permission control for administrative actions.
+
+✅ What’s included in Phase 5
+🔐 Authentication
+
+Email + password login using secure hashed passwords (bcrypt)
+
+OTP (One-Time Password) 6-digit verification workflow
+
+Automatic OTP expiration using MongoDB TTL index
+
+Clean email simulation output during development
+
+🔏 Authorization
+
+JWT-based authentication with 1-hour expiration
+
+Role-based access control (RBAC):
+
+admin
+
+customer (default)
+
+Protected routes using an authorize(["admin"]) middleware
+
+Route-level access checks (e.g., only admin can create/edit/delete)
+
+👤 User Management
+
+User registration with hashed password
+
+Validation rules for name, email, and password
+
+Prevents duplicate email registration
+
+Endpoints to list users (admin-only)
+
+Endpoint to access a user by ID (admin or the user themself)
+
+🛡 Route Protection
+
+Routes now fall into two categories:
+
+Open Routes (No token required)
+
+GET /matches
+
+GET /matches/:id
+
+GET /teams
+
+GET /teams/:id
+
+Protected Routes (Admin only)
+
+POST /matches
+
+PUT /matches/:id
+
+DELETE /matches/:id
+
+POST /teams
+
+PUT /teams/:id
+
+DELETE /teams/:id
+
+GET /auth/users (admin)
+
+GET /auth/users/:id (admin or owner)
+
+🗂️ Updated Project Structure
+
+New files introduced in this phase:
+
+src/
+├─ modules/
+│  ├─ users/
+│  │   ├─ users.routes.js
+│  │   ├─ models/user.model.js
+│  │   ├─ models/otp.model.js
+│  │   └─ middlewares/
+│  │       ├─ login-rules.js
+│  │       ├─ register-rules.js
+│  │       └─ verify-login-rules.js
+│  ├─ matches/ (updated with admin protection)
+│  └─ teams/ (updated with admin protection)
+├─ shared/
+│  ├─ middlewares/authorize.js
+│  └─ utils/
+│       ├─ jwt-utils.js
+│       ├─ password-utils.js
+│       ├─ email-utils.js
+│       └─ compute-utils.js
+
+🔗 New Authentication Endpoints
+POST /api/v1/auth/users/register
+
+Registers a new user (admin or customer).
+
+POST /api/v1/auth/users/login
+
+User submits email + password → receives an OTP.
+
+POST /api/v1/auth/users/verify-login
+
+User submits email + OTP → receives a JWT token.
+
+GET /api/v1/auth/users
+
+Admin-only: returns all registered users.
+
+GET /api/v1/auth/users/:id
+
+Accessible by the admin OR the user themselves.
+
+🔒 How Route Protection Works
+JWT Verification
+
+Each protected route uses an Authorization: Bearer <token> header.
+The middleware checks:
+
+Valid token
+
+Decoded payload (email, _id, role)
+
+Required role(s) for the route
+
+Access Logic
+
+If the route requires "admin" and the token is "customer" → 403 Access denied
+
+If token is missing or invalid → 401 Unauthorized
+
+🧪 Example Postman Tests
+Login Flow
+
+POST /auth/users/login → receives OTP
+
+POST /auth/users/verify-login → receives token
+
+Use token to test admin routes
+
+Admin trying to create a match
+
+✔ Works
+
+Customer trying to create a match
+
+❌ Fails with:
+
+{ "errorMessage": "Access denied" }
+
+Missing or invalid token
+
+❌ Fails with:
+
+{ "errorMessage": "Unauthorized" }
+
+🧾 Phase 5 Summary
+Feature	Status
+OTP Login	✅ Completed
+JWT Authentication	✅ Completed
+Role-Based Authorization	✅ Completed
+Route Protection (Matches/Teams)	✅ Completed
+Secure Password Hashing	✅ Completed
+User Management	✅ Completed
+Postman Tests	✅ Completed
+
+This phase successfully secures the entire backend with a robust authentication and authorization system, ensuring that administrative actions are protected and user access is properly validated.
+
 🧾 Summary of Progress Updated
 Phase	Focus	Key Deliverables
 Phase 1	Project setup	Node + Express skeleton, dummy routes
 Phase 2	Modular architecture	JSON CRUD + validation + middlewares
 Phase 3	Database integration	MongoDB Atlas + Mongoose CRUD + filtering
 Phase 4	Frontend integration	React UI + CRUD via API + Routing + Validation
+Phase 5 Authentication & Authorization   OTP login flow • JWT tokens • Hashed passwords • Role-based access • Protected admin routes • User management

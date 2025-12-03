@@ -8,6 +8,7 @@ import {
   updateTeam,
   deleteTeam
 } from './teams.model.js';
+import authorize from "../../shared/middlewares/authorize.js";
 
 const router = Router();
 
@@ -31,7 +32,8 @@ router.get('/:id', validate(teamIdParamRule), async (req, res, next) => {
 
 
 //POST create
-router.post('/', validate(teamValidationRules), async (req, res, next) => {
+router.post('/', authorize(["admin"]), // NEW: only admins can create teams
+  validate(teamValidationRules), async (req, res, next) => {
   try {
     const created = await addTeam(req.body);
     res.status(201).json({ success: true, data: created });
@@ -39,7 +41,8 @@ router.post('/', validate(teamValidationRules), async (req, res, next) => {
 });
 
 //PUT update
-router.put('/:id', validate([...teamIdParamRule, ...teamValidationRules]), async (req, res, next) => {
+router.put('/:id', authorize(["admin"]), // NEW: only admins can update teams
+  validate([...teamIdParamRule, ...teamValidationRules]), async (req, res, next) => {
   try {
     const updated = await updateTeam(req.params.id, req.body);
     if (!updated) return res.status(404).json({ success: false, error: { message: 'Team not found' } });
@@ -48,7 +51,8 @@ router.put('/:id', validate([...teamIdParamRule, ...teamValidationRules]), async
 });
 
 //DELETE
-router.delete('/:id', validate(teamIdParamRule), async (req, res, next) => {
+router.delete('/:id', authorize(["admin"]), // NEW: only admins can delete teams
+  validate(teamIdParamRule), async (req, res, next) => {
   try {
     const ok = await deleteTeam(req.params.id);
     if (!ok) return res.status(404).json({ success: false, error: { message: 'Team not found' } });

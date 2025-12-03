@@ -8,6 +8,7 @@ import {
   updateMatch,
   deleteMatch
 } from './matches.model.js';
+import authorize from "../../shared/middlewares/authorize.js"; // ADDED protects admin-only routes
 
 const router = Router();
 
@@ -31,7 +32,7 @@ router.get('/:id', validate(matchIdParamRule), async (req, res, next) => {
 });
 
 // POST create
-router.post('/', validate(matchValidationRules), async (req, res, next) => {
+router.post('/', authorize(["admin"]), validate(matchValidationRules), async (req, res, next) => {
   try {
     const created = await addMatch(req.body);
     res.status(201).json({ success: true, data: created });
@@ -39,7 +40,7 @@ router.post('/', validate(matchValidationRules), async (req, res, next) => {
 });
 
 // PUT update
-router.put('/:id', validate([...matchIdParamRule, ...matchValidationRules]), async (req, res, next) => {
+router.put('/:id', authorize(["admin"]), validate([...matchIdParamRule, ...matchValidationRules]), async (req, res, next) => {
   try {
     const updated = await updateMatch(req.params.id, req.body);
     if (!updated) return res.status(404).json({ success: false, error: { message: 'Match not found' } });
@@ -48,7 +49,7 @@ router.put('/:id', validate([...matchIdParamRule, ...matchValidationRules]), asy
 });
 
 // DELETE
-router.delete('/:id', validate(matchIdParamRule), async (req, res, next) => {
+router.delete('/:id', authorize(["admin"]), validate(matchIdParamRule), async (req, res, next) => {
   try {
     const ok = await deleteMatch(req.params.id);
     if (!ok) return res.status(404).json({ success: false, error: { message: 'Match not found' } });

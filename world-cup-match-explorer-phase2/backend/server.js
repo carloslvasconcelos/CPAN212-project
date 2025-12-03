@@ -5,14 +5,13 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import { connectDB } from './src/shared/middlewares/connect-db.js';
-
 import matchesRouter from './src/modules/matches/matches.routes.js';
 import teamsRouter from './src/modules/teams/teams.routes.js';
+import userRoutes from './src/modules/users/users.routes.js';
 import notFound from './src/middlewares/notFound.js';
 import errorHandler from './src/middlewares/errorHandler.js';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -31,6 +30,7 @@ app.get('/api/v1/health', (_req, res) => {
 // Feature modules
 app.use('/api/v1/matches', matchesRouter);
 app.use('/api/v1/teams', teamsRouter);
+app.use('/api/v1/auth', userRoutes);
 
 // 404 & Error handlers
 app.use(notFound);
