@@ -9,11 +9,13 @@
     "lint": "echo \"(optional) add ESLint later\""
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.21.0",
     "express-validator": "^7.2.1",
     "googleapis": "^167.0.0",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.19.3",
     "nodemailer": "^7.0.11"
   },
