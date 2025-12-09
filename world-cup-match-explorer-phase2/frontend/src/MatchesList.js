@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const API_BASE = "http://localhost:3001/api/v1";
+const API_BASE = "https://worldcup-backend-xido.onrender.com/api/v1";
 
 export default function MatchesList() {
   const [matches, setMatches] = useState([]);
