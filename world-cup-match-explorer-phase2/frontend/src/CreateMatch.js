@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-const API_BASE = "https://worldcup-backend-xido.onrender.com/api/v1";
+import API_BASE from "./api";
 
 const STAGES = [
   "Group Stage",

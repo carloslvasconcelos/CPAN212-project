@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const API_BASE = "https://worldcup-backend-xido.onrender.com/api/v1";
+import API_BASE from "./api";
 
 export default function VerifyOtp() {
   const [otp, setOtp] = useState("");
