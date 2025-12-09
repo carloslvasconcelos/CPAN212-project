@@ -19,7 +19,7 @@ const router = Router();
 /**
  * LOGIN — SEND OTP
  */
-router.post("/users/login", loginRules, async (req, res) => {
+router.post("/login", loginRules, async (req, res) => {
   const { email, password } = req.body;
 
   const foundUser = await UserModel.findOne({ email });
@@ -56,7 +56,7 @@ router.post("/users/login", loginRules, async (req, res) => {
 /**
  * VERIFY LOGIN — CHECK OTP + RETURN TOKEN
  */
-router.post("/users/verify-login", verifyLoginRules, async (req, res) => {
+router.post("/verify-login", verifyLoginRules, async (req, res) => {
   const { email, otp } = req.body;
 
   const foundUser = await UserModel.findOne({ email });
@@ -94,7 +94,7 @@ router.post("/users/verify-login", verifyLoginRules, async (req, res) => {
 /**
  * REGISTER USER
  */
-router.post("/users/register", registerRules, async (req, res) => {
+router.post("/register", registerRules, async (req, res) => {
   const newUser = req.body;
 
   const existingUser = await UserModel.findOne({ email: newUser.email });
@@ -125,7 +125,7 @@ router.get("/users", authorize(["admin"]), async (req, res) => {
 /**
  * GET USER BY ID (ADMIN OR OWNER)
  */
-router.get("/users/:id", authorize(["admin", "customer"]), async (req, res) => {
+router.get("/:id", authorize(["admin", "customer"]), async (req, res) => {
   const userID = req.params.id;
   const requester = req.account;
 

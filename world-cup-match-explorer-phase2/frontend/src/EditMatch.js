@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+const API_BASE = "http://localhost:3001/api/v1";
+
 export default function EditMatch() {
   const navigate = useNavigate();
-  const { id } = useParams(); // NEW: gets the match ID from the URL
+  const { id } = useParams();
 
   const [form, setForm] = useState({
     year: "",
@@ -14,19 +16,41 @@ export default function EditMatch() {
   });
 
   const [error, setError] = useState("");
-
   const [success, setSuccess] = useState("");
 
+  // ----------------------------
+  // CHECK ADMIN PERMISSION
+  // ----------------------------
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setError("You must be logged in as admin.");
+      return;
+    }
+
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+
+      if (payload.role !== "admin") {
+        setError("Only admins can edit matches.");
+      }
+    } catch (err) {
+      setError("Invalid token. Please login again.");
+    }
+  }, []);
+
+  // ----------------------------
+  // LOAD MATCH INFO
+  // ----------------------------
   useEffect(() => {
     const loadMatch = async () => {
       try {
-        const response = await fetch(
-          `http://localhost:3001/api/v1/matches/${id}`
-        );
-        const data = await response.json();
+        const res = await fetch(`${API_BASE}/matches/${id}`);
+        const data = await res.json();
 
-        if (!response.ok) {
-          setError("Match not found.");
+        if (!res.ok) {
+          setError(data?.error?.message || "Match not found.");
           return;
         }
 
@@ -38,7 +62,7 @@ export default function EditMatch() {
           score: data.data.score,
         });
       } catch (err) {
-        setError("Error loading match.");
+        setError("Server error loading match.");
       }
     };
 
@@ -49,26 +73,35 @@ export default function EditMatch() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  // ----------------------------
+  // SUBMIT UPDATE
+  // ----------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
 
-    if (!form.year || !form.stage || !form.home || !form.away || !form.score) {
-      setError("All fields are required.");
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setError("Unauthorized. Please log in.");
       return;
     }
 
     try {
-      const response = await fetch(
-        `http://localhost:3001/api/v1/matches/${id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
-        }
-      );
+      const res = await fetch(`${API_BASE}/matches/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(form),
+      });
 
-      if (!response.ok) {
-        setError("Error updating match.");
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data?.error?.message || "Error updating match.");
         return;
       }
 
@@ -84,11 +117,13 @@ export default function EditMatch() {
     <div style={{ padding: "20px" }}>
       <h2>Edit Match</h2>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && (
+        <p style={{ color: "red", whiteSpace: "pre-wrap" }}>{error}</p>
+      )}
+
       {success && <p style={{ color: "green" }}>{success}</p>}
 
       <form onSubmit={handleSubmit} style={{ maxWidth: "400px" }}>
-
         <label>Year:</label>
         <input
           type="number"
@@ -96,7 +131,6 @@ export default function EditMatch() {
           value={form.year}
           onChange={handleChange}
           required
-          style={{ width: "100%", marginBottom: "10px" }}
         />
 
         <label>Stage:</label>
@@ -106,7 +140,6 @@ export default function EditMatch() {
           value={form.stage}
           onChange={handleChange}
           required
-          style={{ width: "100%", marginBottom: "10px" }}
         />
 
         <label>Home Team:</label>
@@ -116,7 +149,6 @@ export default function EditMatch() {
           value={form.home}
           onChange={handleChange}
           required
-          style={{ width: "100%", marginBottom: "10px" }}
         />
 
         <label>Away Team:</label>
@@ -126,7 +158,6 @@ export default function EditMatch() {
           value={form.away}
           onChange={handleChange}
           required
-          style={{ width: "100%", marginBottom: "10px" }}
         />
 
         <label>Score:</label>
@@ -136,17 +167,16 @@ export default function EditMatch() {
           value={form.score}
           onChange={handleChange}
           required
-          style={{ width: "100%", marginBottom: "10px" }}
         />
 
         <button
           type="submit"
           style={{
             padding: "10px",
+            marginTop: "10px",
             backgroundColor: "black",
             color: "white",
             width: "100%",
-            cursor: "pointer",
           }}
         >
           Update Match

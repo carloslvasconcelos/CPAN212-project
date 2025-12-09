@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+
+const API_BASE = "http://localhost:3001/api/v1";
 
 const STAGES = [
   "Group Stage",
@@ -23,38 +25,70 @@ export default function CreateMatch() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  // CHECK AUTH + ADMIN ROLE
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // simple validation
-    if (!form.year || !form.stage || !form.home || !form.away || !form.score) {
-      setError("All fields are required.");
+    if (!token) {
+      setError("You must be logged in as admin.");
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:3001/api/v1/matches", {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+
+      if (payload.role !== "admin") {
+        setError("Only admins can create new matches.");
+      }
+    } catch {
+      setError("Invalid token. Please login again.");
+    }
+  }, []);
+
+  // SE NÃO FOR ADMIN — MOSTRA A MENSAGEM E ENCERRA O COMPONENTE
+  if (error && error.includes("Only admins")) {
+    return <p style={{ color: "red" }}>{error}</p>;
+  }
+
+  // HANDLE FORM CHANGES
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  // HANDLE SUBMIT
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setError("Unauthorized. Please log in.");
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/matches`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(form),
       });
 
-      const data = await response.json();
+      const data = await res.json();
 
-      if (!response.ok) {
-        setError(data?.error?.message || "Error creating match");
+      if (!res.ok) {
+        setError(data?.error?.message || "Error creating match.");
         return;
       }
 
       setSuccess("Match created successfully!");
-
-      // Redirect after 1 second
       setTimeout(() => navigate("/matches"), 1000);
     } catch (err) {
+      console.error(err);
       setError("Server error.");
     }
   };
@@ -67,7 +101,6 @@ export default function CreateMatch() {
       {success && <p style={{ color: "green" }}>{success}</p>}
 
       <form onSubmit={handleSubmit} style={{ maxWidth: "400px" }}>
-
         <label>Year:</label>
         <input
           type="number"
@@ -75,7 +108,6 @@ export default function CreateMatch() {
           value={form.year}
           onChange={handleChange}
           required
-          style={{ width: "100%", marginBottom: "10px" }}
         />
 
         <label>Stage:</label>
@@ -84,15 +116,15 @@ export default function CreateMatch() {
           value={form.stage}
           onChange={handleChange}
           required
-          style={{ width: "100%", marginBottom: "10px" }}
         >
+          <option value="">Select a stage</option>
+          {STAGES.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
+        </select>
 
-        <option value="">Select a stage</option>
-
-        {STAGES.map(stage => (
-          <option key={stage} value={stage}>{stage}</option>
-        ))}
-      </select>
         <label>Home Team:</label>
         <input
           type="text"
@@ -100,7 +132,6 @@ export default function CreateMatch() {
           value={form.home}
           onChange={handleChange}
           required
-          style={{ width: "100%", marginBottom: "10px" }}
         />
 
         <label>Away Team:</label>
@@ -110,7 +141,6 @@ export default function CreateMatch() {
           value={form.away}
           onChange={handleChange}
           required
-          style={{ width: "100%", marginBottom: "10px" }}
         />
 
         <label>Score:</label>
@@ -120,7 +150,6 @@ export default function CreateMatch() {
           value={form.score}
           onChange={handleChange}
           required
-          style={{ width: "100%", marginBottom: "10px" }}
         />
 
         <button
@@ -130,7 +159,7 @@ export default function CreateMatch() {
             backgroundColor: "black",
             color: "white",
             width: "100%",
-            cursor: "pointer",
+            marginTop: "10px",
           }}
         >
           Create Match
